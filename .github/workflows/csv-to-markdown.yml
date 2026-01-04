@@ -3,8 +3,8 @@ name: CSV to Markdown Table
 on:
   push:
     paths:
-      - 'Base_Projet_DC_Ensae_25_26.csv'  # Ne fonctionne que quand le CSV est modifié
-  workflow_dispatch:  # Permet de lancer l'action manuellement
+      - 'Base_Projet_DC_Ensae_25_26.csv'
+  workflow_dispatch:
 
 jobs:
   convert:
@@ -21,21 +21,32 @@ jobs:
       - name: Install pandas
         run: pip install pandas tabulate
 
-      - name: Build Markdown table from CSV
+      - name: Append Markdown table from CSV to README
         run: |
           python - << 'EOF'
           import pandas as pd
+          import os
 
-          # lire ton CSV
-          df = pd.read_csv('Base_Projet_DC_Ensae_25_26.csv')
+          csv_file = 'Base_Projet_DC_Ensae_25_26.csv'
+          readme_file = 'README.md'
 
-          # transformer en Markdown
-          markdown = df.to_markdown(index=False)
+          # Lire le CSV
+          df = pd.read_csv(csv_file)
 
-          # écrire le tableau dans README.md
-          with open('README.md', 'w') as f:
-              f.write("# Aperçu des données\n\n")
-              f.write(markdown)
+          # Transformer en Markdown
+          md_table = df.to_markdown(index=False)
+
+          # Lire le README existant (ou créer vide si n'existe pas)
+          if os.path.exists(readme_file):
+              with open(readme_file, 'r', encoding='utf-8') as f:
+                  content = f.read()
+          else:
+              content = ""
+
+          # Ajouter le tableau après le texte existant
+          with open(readme_file, 'w', encoding='utf-8') as f:
+              f.write(content + "\n\n# Aperçu des données\n\n")
+              f.write(md_table)
           EOF
 
       - name: Commit and Push updated README
@@ -43,5 +54,5 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "Update README with CSV Markdown table" || echo "No changes"
+          git commit -m "Append CSV Markdown table to README" || echo "No changes"
           git push
