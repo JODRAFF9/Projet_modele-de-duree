@@ -27,7 +27,7 @@ jobs:
           import pandas as pd
           import os
 
-          csv_file = 'Base_Projet_DC_Ensae_25_26.csv'
+          csv_file = 'Base_Projet_DC_Ensae_25_26_OK.csv'
           readme_file = 'README.md'
 
           # Lire le CSV
