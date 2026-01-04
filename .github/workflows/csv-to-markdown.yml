@@ -1,0 +1,20 @@
+name: CSV to Markdown Table
+
+on:
+  push:
+    paths:
+      - 'Base_Projet_DC_Ensae_25_26.csv'   # Déclenche l'action quand le CSV change
+  workflow_dispatch:           # Permet de lancer manuellement l'action
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Convert CSV to Markdown
+        uses: jakejarvis/csv-to-markdown@v1
+        with:
+          csv-file: 'Base_Projet_DC_Ensae_25_26.csv'
+          output-file: 'README.md'   # Fichier où le tableau sera écrit
+          table-name: 'Aperçu des données'  # Titre du tableau dans Markdown
